@@ -23,6 +23,7 @@ get '/geotest' do
   results.each do |row|
     # puts row["lat"].to_s + " & " + row["lon"].to_s
     geo_tags.push([row["lat"],row["lng"]])
+    return results
   end
   geo_analysis = Geo_Analysis.new(geo_tags)
 
@@ -36,9 +37,7 @@ get '/geotest' do
         lng: arr[1].to_s
     }
   end
-  
   article.to_json
-
 end
 
 
@@ -71,3 +70,12 @@ post '/edit' do
   end
 end
 
+post '/test' do
+  body = JSON.parse request.body.read
+  # query = "insert into post_test(id, lat, lng)values"
+
+  body.each do |json|
+    client.query("insert into post_test(id, lat, lng) values(#{json["id"]}, #{json["lat"]}, #{json["lng"]});")
+  end
+  status 200
+end
