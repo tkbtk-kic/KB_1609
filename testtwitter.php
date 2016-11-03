@@ -2,13 +2,22 @@
 require "twitteroauth/autoload.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
-$consumerKey = "uyrXf2COfXQNiyqfAwX21FwF9";
-$consumerSecret ="gi8GfznUm3Kr4IuYKVORhX2G3wfVg2WDWBoHy6Bn3yNyLpmUuU";
-$accessToken = "2497747381-XiSKaT51LSqimfwv9zGBYS30ypq0VTfUROOhAtl";
-$accessTokenSecret ="Vx5kC2bXDvLVMUKpx8Sn4V1S3uue5hXVM5uDaPaz3aIoE";
+$jsonUrl = "Twitterkey.json"; //JSONファイルの場所とファイル名を記述
+if(file_exists($jsonUrl)){
+  $json = file_get_contents($jsonUrl);
+  $json = mb_convert_encoding($json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
+  $obj = json_decode($json,true);
+  //var_dump($obj);
+  $consumerKey = $obj["CONSUMERKEY"];
+  $consumerSecret = $obj["CONSUMERSECRET"];
+  $accessToken = $obj["ACCESSTOKEN"];
+  $accessTokenSecret = $obj["ACCESSTOKENSECRET"];
+}
+
+//var_dump($consumerKey);
 
 $connection = new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
-//var_dump($connection);
+var_dump($connection);
 
 $tweets_params =["geocode" => "34.694343,135.194507,25km"];
 
