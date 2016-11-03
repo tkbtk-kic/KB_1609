@@ -2,6 +2,7 @@
 class Geo_Analysis
 
   attr_reader :hot_spots
+  # hotspot = [{id: 1, coordinates: [34,135], tweets_coordinates: [[34,136], ...]}...]
 
   def initialize(geo_tags, thresh=6, neightborhood = 0.001)
     @thresh = thresh + 1 # hot-spotとする下限
@@ -20,12 +21,24 @@ class Geo_Analysis
 
   def analyze
     @geo_buf =@geo_info
+    id =0
     self.find_neigh
     while
     ((raw = @geo_buf.max_by{|max|
       max[:neigh].size
     })[:neigh].size >= @thresh)
-      @hot_spots << self.avarage(raw)
+      id +=1
+      tweets_coordinates =[]
+      raw[:neigh].each do |neight|
+        @geo_info.each do |raw|
+          if(raw[:id] == neight)
+            tweets_coordinates << [raw[:lat], raw[:lon]]
+          end
+        end
+
+      end
+
+      @hot_spots << {id: id, coordinates: self.avarage(raw), tweets_coordinates: tweets_coordinates}
       self.remove_geo(raw[:neigh])
     end
   end
@@ -81,8 +94,8 @@ class Geo_Analysis
 end
 
 
-# geo_tags = [[34.701234, 135.189666], [34.701385, 135.189516], [34.701039, 135.18991], [34.701622, 135.190088], [34.702358, 135.190568], [34.702423, 135.192115], [34.702366, 135.190811], [34.700914, 135.190675], [34.700932, 135.191524], [34.701301, 135.19149], [34.701245, 135.191548], [34.699618, 135.193126], [34.69983, 135.190226], [34.698321, 135.191102], [34.701042, 135.189356], [34.694749, 135.190626], [34.69889, 135.193623], [34.701397, 135.189779], [34.701378, 135.189573], [34.701257, 135.189652]]
-#
-# geo_analysis = Geo_Analysis.new(geo_tags)
-#
-# p geo_analysis.hot_spots
+geo_tags = [[34.701234, 135.189666], [34.701385, 135.189516], [34.701039, 135.18991], [34.701622, 135.190088], [34.702358, 135.190568], [34.702423, 135.192115], [34.702366, 135.190811], [34.700914, 135.190675], [34.700932, 135.191524], [34.701301, 135.19149], [34.701245, 135.191548], [34.699618, 135.193126], [34.69983, 135.190226], [34.698321, 135.191102], [34.701042, 135.189356], [34.694749, 135.190626], [34.69889, 135.193623], [34.701397, 135.189779], [34.701378, 135.189573], [34.701257, 135.189652]]
+
+geo_analysis = Geo_Analysis.new(geo_tags)
+
+p geo_analysis.hot_spots

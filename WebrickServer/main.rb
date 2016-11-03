@@ -23,21 +23,20 @@ get '/geotest' do
   results.each do |row|
     # puts row["lat"].to_s + " & " + row["lon"].to_s
     geo_tags.push([row["lat"],row["lng"]])
-    return results
   end
   geo_analysis = Geo_Analysis.new(geo_tags)
 
-  article = {}
-  i=0
-  geo_analysis.hot_spots.each do |arr|
-    i+=1
-    article={
-        id: i,
-        lat: arr[0].to_s,
-        lng: arr[1].to_s
-    }
-  end
-  article.to_json
+
+  # geo_analysis.hot_spots.each do |arr|
+  #   # article << {
+  #   #     id: arr[:id],
+  #   #     coordinates: arr[:coordinates],
+  #   #     tweets_coordinates: arr[:tweets_coordinates]
+  #   # }
+  #   p arr
+  # end
+  # article.to_json
+  p JSON[geo_analysis.hot_spots]
 end
 
 
