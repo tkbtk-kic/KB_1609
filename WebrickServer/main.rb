@@ -60,12 +60,40 @@ get '/hotspot' do
 end
 
 post '/edit' do
-  body = request.body.read
-  # p body
+  body = JSON.parse(request.body.read)
+  # この時点ではstring型
   if body == ''
     status 400
   else
-    body.to_json
+    if(!body.keys.include?("statuses"))
+      p "error message"
+      return status 400
+    else
+      arr =[]
+      body["statuses"].each do |raw|
+        article ={
+          id: raw["id"],
+          lat: raw["geo"]["coordinates"][0],
+          lng: raw["geo"]["coordinates"][1],
+          datetime: raw["created_at"]
+        }
+        arr << article
+      end
+      # p arr
+      JSON.pretty_generate(arr)
+    end
+    #       lat: raw["geo"]["coordinates"][0],
+    #       lng: raw["geo"]["coordinates"][1],
+    #       datetime: raw["created_at"]
+    #   }
+    #   arr << article
+    # end
+    # arr.to_json
+    # status 200
+    # body.to_json
+    # p body.class
+    # p body
+    # status 200
   end
 end
 
