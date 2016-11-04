@@ -19,10 +19,13 @@ if(file_exists($jsonUrl)){
 $connection = new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
 var_dump($connection);
 
-$tweets_params =["geocode" => "34.694343,135.194507,25km"];
+$tweets_params =["geocode" => "34.694343,135.194507,1km"];
 
 $tweets = $connection->get('search/tweets', $tweets_params);
-var_dump($tweets);
+//var_dump($tweets);
+$arr = json_encode($tweets);
+file_put_contents("geosearch.json" , $arr);
+
 ?>
 
 
