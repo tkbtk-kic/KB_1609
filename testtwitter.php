@@ -9,8 +9,7 @@ if(file_exists($jsonUrl)){
   $obj = json_decode($json,true);
   //var_dump($obj);
   $consumerKey = $obj["CONSUMERKEY"];
-  $consumerSecret = $obj["CONSUMERSEC
-  RET"];
+  $consumerSecret = $obj["CONSUMERSECRET"];
   $accessToken = $obj["ACCESSTOKEN"];
   $accessTokenSecret = $obj["ACCESSTOKENSECRET"];
 }
@@ -38,7 +37,7 @@ curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($curl);
 curl_close($curl);
 
-echo $response, PHP_EOL;
+//echo $response, PHP_EOL;
 
 //$post=[];
 //foreach($tweets as $key => $value){

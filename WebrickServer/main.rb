@@ -2,6 +2,26 @@ require 'sinatra'
 require 'mysql2'
 require 'json'
 load 'ruby/Geo_Analysis.rb'
+#
+# やること
+# mysql本番テーブル作る
+# (id　long, lat double, lng double, datetime datetime)
+# それに合わせてやること
+# ・APIで取得した物をデータベースに入れる
+# ・逆に古いデータを消す（1時間とか？）
+# ・15分に1回？
+# ・・データベースが変更されたタイミングでAnalysisを再計算する
+# ・getで返すものにdatetime追加？
+#
+# geo_analysisの仕様変更
+# ・ホットスポットの閾値を決めるんじゃなくて ホットスポットの数を決める
+#
+# testtwieet.phpを本番仕様に
+# ・"15分に1回" "最大180件" "1時間以内"のデータをとる
+# ・"15分に一回" "古いデータを消す"
+# ・"15分に1回" "Analysisを再計算"
+
+
 
 
 #### データベースの設定
@@ -61,7 +81,8 @@ end
 
 post '/edit' do
   body = JSON.parse(request.body.read)
-  # この時点ではstring型
+  # この時点でstring型から HASHへ
+  # p body
   if body == ''
     status 400
   else
@@ -71,29 +92,23 @@ post '/edit' do
     else
       arr =[]
       body["statuses"].each do |raw|
-        article ={
-          id: raw["id"],
-          lat: raw["geo"]["coordinates"][0],
-          lng: raw["geo"]["coordinates"][1],
-          datetime: raw["created_at"]
-        }
-        arr << article
+        if(!raw["geo"].nil?)
+          article ={
+              id: raw["id"],
+              lat: raw["geo"]["coordinates"][0],
+              lng: raw["geo"]["coordinates"][1],
+              datetime: raw["created_at"]
+          }
+          arr << article
+        end
       end
-      # p arr
-      JSON.pretty_generate(arr)
+      p arr
+      # JSON.pretty_generate(arr)
     end
-    #       lat: raw["geo"]["coordinates"][0],
-    #       lng: raw["geo"]["coordinates"][1],
-    #       datetime: raw["created_at"]
-    #   }
-    #   arr << article
-    # end
-    # arr.to_json
-    # status 200
-    # body.to_json
+
     # p body.class
     # p body
-    # status 200
+    status 200
   end
 end
 
