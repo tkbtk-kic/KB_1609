@@ -102,7 +102,7 @@ post '/edit' do
           arr << article
         end
       end
-      p arr
+      # p arr
       # JSON.pretty_generate(arr)
     end
 
