@@ -1,4 +1,4 @@
-# TwitHotspot
+# TwitHotSpot
 
 ## 製品概要
 ### SS(SightSeeing) - Tech
