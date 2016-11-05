@@ -21,8 +21,7 @@ $connection = new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $acc
 
 $tweets_params =["rpp"=>"90", "geocode" => "34.694343,135.194507,1km"];
 
-//while(1){
-//}
+while(1){
 
 $tweets = $connection->get('search/tweets', $tweets_params);
 // この時点で$tweetsはオブジェクト型らしい
@@ -39,6 +38,12 @@ curl_setopt($curl, CURLOPT_POSTFIELDS, $arr);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 $response = curl_exec($curl);
 curl_close($curl);
+
+
+sleep(480);
+
+}
+
 
 //echo $response, PHP_EOL;
 
