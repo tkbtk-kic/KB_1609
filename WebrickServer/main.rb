@@ -8,6 +8,7 @@ load 'ruby/Geo_Analysis.rb'
 # (id　long, lat double, lng double, datetime datetime)　✔
 # それに合わせてやること
 # ・APIで取得した物をデータベースに入れる ✔
+# ・一時間以内に取得した物をとる　✔
 # ・逆に古いデータを消す（1時間とか？）×
 # ・15分に1回？×
 # ・・データベースが変更されたタイミングでAnalysisを再計算する
@@ -45,8 +46,8 @@ end
 
 get '/recal' do
   geo_tags=[]
-  results = client.query("select * from jphacks;")
-
+  results = client.query("select * from jphacks where subdate(now(),interval 9 hour) < create_at;")
+  # interval 9 について 日本時間と, ツイッターの時間の 時差が8時間
   results.each do |raw|
     geo_tags <<{
         id:raw["id"],
@@ -54,8 +55,7 @@ get '/recal' do
         lng:raw["lng"],
     }
   end
-  geo_analysis= Geo_Analysis.new(geo_tags)
-
+  # geo_analysis= Geo_Analysis.new(geo_tags)
 
   p geo_tags
   geo_tags.to_json
