@@ -22,7 +22,7 @@ load 'ruby/Geo_Analysis.rb'
 # ・"15分に1回" "最大180件" "1時間以内"のデータをとる チェック
 # ・"15分に一回" "古いデータを消す" ×
 # ・"15分に1回" "Analysisを再計算" ✕
-
+# ・swarmappをころす
 
 
 
@@ -71,13 +71,16 @@ post '/edit' do
       arr =[]
       body["statuses"].each do |raw|
         if(!raw["geo"].nil?)
-          article ={
-              id: raw["id"],
-              lat: raw["geo"]["coordinates"][0],
-              lng: raw["geo"]["coordinates"][1],
-              create_at: (Time.parse(raw["created_at"])).strftime("%Y%m%d%H%M%S")
-          }
-          arr << article
+          p raw["entities"]["urls"][0]["display_url"]
+          if(!(raw["entities"]["urls"][0]["display_url"][0, 12] == "swarmapp.com"))
+            article ={
+                id: raw["id"],
+                lat: raw["geo"]["coordinates"][0],
+                lng: raw["geo"]["coordinates"][1],
+                create_at: (Time.parse(raw["created_at"])).strftime("%Y%m%d%H%M%S")
+            }
+            arr << article
+          end
         end
       end
       arr.each do |json|
