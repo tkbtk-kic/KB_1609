@@ -4,21 +4,22 @@ require 'json'
 load 'ruby/Geo_Analysis.rb'
 #
 # やること
-# mysql本番テーブル作る
-# (id　long, lat double, lng double, datetime datetime)
+# mysql本番テーブル作る　✔
+# (id　long, lat double, lng double, datetime datetime)　✔
 # それに合わせてやること
-# ・APIで取得した物をデータベースに入れる
-# ・逆に古いデータを消す（1時間とか？）
-# ・15分に1回？
+# ・APIで取得した物をデータベースに入れる ✔
+# ・逆に古いデータを消す（1時間とか？）×
+# ・15分に1回？×
 # ・・データベースが変更されたタイミングでAnalysisを再計算する
 # ・getで返すものにdatetime追加？
+# ・Time Parseでcreate_atをTime型に, Time型をMySQLのDateTime型に ✔
 #
 # geo_analysisの仕様変更
-# ・ホットスポットの閾値を決めるんじゃなくて ホットスポットの数を決める
+# ・ホットスポットの閾値を決めるんじゃなくて ホットスポットの数を決める ✔
 #
 # testtwieet.phpを本番仕様に
 # ・"15分に1回" "最大180件" "1時間以内"のデータをとる
-# ・"15分に一回" "古いデータを消す"
+# ・"15分に一回" "古いデータを消す" ×
 # ・"15分に1回" "Analysisを再計算"
 
 
@@ -36,29 +37,30 @@ client = Mysql2::Client.new(:socket => json_data["socket"], :username=> json_dat
 
 set :public_folder, File.dirname(__FILE__) + '/html'
 set :bind, '0.0.0.0'
+geo_analysis = ""
 
 get '/geotest' do
-  geo_tags=[]
-  results = client.query("select * from test_geo")
-  results.each do |row|
-    # puts row["lat"].to_s + " & " + row["lon"].to_s
-    geo_tags.push([row["lat"],row["lng"]])
-  end
-  geo_analysis = Geo_Analysis.new(geo_tags)
-
-
-  # geo_analysis.hot_spots.each do |arr|
-  #   # article << {
-  #   #     id: arr[:id],
-  #   #     coordinates: arr[:coordinates],
-  #   #     tweets_coordinates: arr[:tweets_coordinates]
-  #   # }
-  #   p arr
-  # end
-  # article.to_json
-  p JSON[geo_analysis.hot_spots]
+  geo_analysis.hot_spots.to_json
 end
 
+get '/recal' do
+  geo_tags=[]
+  results = client.query("select * from jphacks;")
+
+  results.each do |raw|
+    geo_tags <<{
+        id:raw["id"],
+        lat:raw["lat"],
+        lng:raw["lng"],
+    }
+  end
+  geo_analysis= Geo_Analysis.new(geo_tags)
+
+
+  p geo_tags
+  geo_tags.to_json
+
+end
 
 get '/show' do
   article={
@@ -97,10 +99,13 @@ post '/edit' do
               id: raw["id"],
               lat: raw["geo"]["coordinates"][0],
               lng: raw["geo"]["coordinates"][1],
-              datetime: raw["created_at"]
+              create_at: (Time.parse(raw["created_at"])).strftime("%Y%m%d%H%M%S")
           }
           arr << article
         end
+      end
+      arr.each do |json|
+        client.query("insert into jphacks(id, lat, lng, create_at)values(#{json[:id]}, #{json[:lat]}, #{json[:lng]}, #{json[:create_at]});")
       end
       # p arr
       # JSON.pretty_generate(arr)
