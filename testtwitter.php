@@ -19,7 +19,10 @@ if(file_exists($jsonUrl)){
 $connection = new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
 //var_dump($connection);
 
-$tweets_params =["geocode" => "34.694343,135.194507,1km"];
+$tweets_params =["rpp"=>"90", "geocode" => "34.694343,135.194507,1km"];
+
+//while(1){
+//}
 
 $tweets = $connection->get('search/tweets', $tweets_params);
 // この時点で$tweetsはオブジェクト型らしい

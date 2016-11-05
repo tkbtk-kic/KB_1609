@@ -12,7 +12,7 @@ load 'ruby/Geo_Analysis.rb'
 # ・逆に古いデータを消す（1時間とか？）×
 # ・15分に1回？×
 # ・・データベースが変更されたタイミングでAnalysisを再計算する
-# ・getで返すものにdatetime追加？
+# ・getで返すものにdatetime追加？ ×
 # ・Time Parseでcreate_atをTime型に, Time型をMySQLのDateTime型に ✔
 #
 # geo_analysisの仕様変更
@@ -41,44 +41,31 @@ set :bind, '0.0.0.0'
 geo_analysis = ""
 
 get '/geotest' do
-  geo_analysis.hot_spots.to_json
+  JSON.generate(geo_analysis.hot_spots)
 end
 
 get '/recal' do
   geo_tags=[]
-  results = client.query("select * from jphacks where subdate(now(),interval 9 hour) < create_at;")
+  results = client.query("select * from production where subdate(now(),interval 10 hour) < create_at;")
   # interval 9 について 日本時間と, ツイッターの時間の 時差が8時間
   results.each do |raw|
-    geo_tags <<{
+    geo_tags << {
         id:raw["id"],
         lat:raw["lat"],
         lng:raw["lng"],
     }
   end
-  # geo_analysis= Geo_Analysis.new(geo_tags)
+  geo_analysis= Geo_Analysis.new(geo_tags)
 
   p geo_tags
   geo_tags.to_json
 
 end
 
-get '/show' do
-  article={
-      id: 1,
-      title: "API Test",
-      content: "get test"
-  }
-  article.to_json
-end
-
 
 get '/hotspot' do
-  article={
-      id: 1,
-      lat: 34.698901,
-      lng: 135.193583
-  }
-  article.to_json
+  article=[{:id=>1, :coordinates=>[34.694141925, 135.195908085], :tweets=>[{:tweet_id=>794430542129332224, :tweets_coordinates=>[34.69395698, 135.19599954]}, {:tweet_id=>794430542129332224, :tweets_coordinates=>[34.69395698, 135.19599954]}, {:tweet_id=>794430542129332224, :tweets_coordinates=>[34.69395698, 135.19599954]}, {:tweet_id=>794430542129332224, :tweets_coordinates=>[34.69395698, 135.19599954]}, {:tweet_id=>794430455227514881, :tweets_coordinates=>[34.69432687, 135.19581663]}, {:tweet_id=>794430455227514881, :tweets_coordinates=>[34.69432687, 135.19581663]}, {:tweet_id=>794430455227514881, :tweets_coordinates=>[34.69432687, 135.19581663]}, {:tweet_id=>794430455227514881, :tweets_coordinates=>[34.69432687, 135.19581663]}, {:tweet_id=>794430542129332224, :tweets_coordinates=>[34.69395698, 135.19599954]}, {:tweet_id=>794430542129332224, :tweets_coordinates=>[34.69395698, 135.19599954]}, {:tweet_id=>794430542129332224, :tweets_coordinates=>[34.69395698, 135.19599954]}, {:tweet_id=>794430542129332224, :tweets_coordinates=>[34.69395698, 135.19599954]}, {:tweet_id=>794430455227514881, :tweets_coordinates=>[34.69432687, 135.19581663]}, {:tweet_id=>794430455227514881, :tweets_coordinates=>[34.69432687, 135.19581663]}, {:tweet_id=>794430455227514881, :tweets_coordinates=>[34.69432687, 135.19581663]}, {:tweet_id=>794430455227514881, :tweets_coordinates=>[34.69432687, 135.19581663]}]}]
+  JSON.generate(article)
 end
 
 post '/edit' do
@@ -105,7 +92,7 @@ post '/edit' do
         end
       end
       arr.each do |json|
-        client.query("insert into jphacks(id, lat, lng, create_at)values(#{json[:id]}, #{json[:lat]}, #{json[:lng]}, #{json[:create_at]});")
+        client.query("insert into production(id, lat, lng, create_at)values(#{json[:id]}, #{json[:lat]}, #{json[:lng]}, #{json[:create_at]});")
       end
       # p arr
       # JSON.pretty_generate(arr)
