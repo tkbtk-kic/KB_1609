@@ -42,20 +42,28 @@
 #### API・データ
 * TwitterAPI
 * GoogleAPI
-* json
 
 #### フレームワーク・ライブラリ・モジュール
-* PHP
 * Ruby(Sinatora)
-* JavaScript
 * TwitterOAuth
+* Jquery
+* mysql2
+* Sinatora/cross_origin
 
 #### デバイス
-* コンピュータ
+* コンピュータ（スマホも想定）
 * raspberry pi等外部デバイス（構想段階）
 
 ### 独自技術
 #### 期間中に開発した独自機能・技術
+* ホットスポット特定API
+210.146.64.140:4567/hotspot
+
+* ホットスポット詳細情報表示API
+210.146.64.140:4567/hotspot/long
+
+* 全体マップとホットスポット閲覧用ページ
+210.146.64.140:4567/index.html
 
 
 #### 研究内容（任意）
