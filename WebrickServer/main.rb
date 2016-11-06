@@ -1,7 +1,9 @@
 require 'sinatra'
+require 'sinatra/cross_origin'
 require 'mysql2'
 require 'json'
 load 'ruby/Geo_Analysis.rb'
+register Sinatra::CrossOrigin
 #
 # やること
 # mysql本番テーブル作る　✔
@@ -38,8 +40,17 @@ client = Mysql2::Client.new(:socket => json_data["socket"], :username=> json_dat
 
 set :public_folder, File.dirname(__FILE__) + '/html'
 set :bind, '0.0.0.0'
+configure do
+  enable :cross_origin
+end
+
+# get '/cross_origin' do
+#   cross_origin
+#   "This is available to cross-origin javascripts"
+# end
 
 get '/hotspot' do
+
   geo_tags=[]
   results = client.query("select * from production where subdate(now(),interval 10 hour) < create_at;")
   # interval 10 について 日本時間と, ツイッターの時間の 時差が8時間
@@ -52,12 +63,14 @@ get '/hotspot' do
   end
   geo_analysis= Geo_Analysis.new(geo_tags)
 
-  p geo_tags
-  geo_analysis.hot_spots.to_json
+
+  cross_origin
+  geo_analysis.hot_spots_googlemap.to_json
 end
 
 
 post '/edit' do
+  # cross_origin
   body = JSON.parse(request.body.read)
   # この時点でstring型から HASHへ
   # p body
@@ -71,8 +84,14 @@ post '/edit' do
       arr =[]
       body["statuses"].each do |raw|
         if(!raw["geo"].nil?)
-          p raw["entities"]["urls"][0]["display_url"]
-          if(!(raw["entities"]["urls"][0]["display_url"][0, 12] == "swarmapp.com"))
+          # # p raw["entities"]["urls"][0]["display_url"]
+          # if(!(raw["entities"].keys.include?("urls")))
+          #   p
+          # end
+          #
+          #   #  !(raw["entities"]["urls"][0]["display_url"][0, 12] == "swarmapp.com")
+          if(!(raw["text"][0,5] == "I'm at"))
+
             article ={
                 id: raw["id"],
                 lat: raw["geo"]["coordinates"][0],
@@ -81,10 +100,16 @@ post '/edit' do
             }
             arr << article
           end
+
+
         end
       end
       arr.each do |json|
-        client.query("insert into production(id, lat, lng, create_at)values(#{json[:id]}, #{json[:lat]}, #{json[:lng]}, #{json[:create_at]});")
+        begin
+          client.query("insert into production(id, lat, lng, create_at)values(#{json[:id]}, #{json[:lat]}, #{json[:lng]}, #{json[:create_at]});")
+        rescue
+          next
+        end
       end
 
     end
