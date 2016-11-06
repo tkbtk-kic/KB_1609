@@ -62,10 +62,27 @@ get '/hotspot' do
     }
   end
   geo_analysis= Geo_Analysis.new(geo_tags)
+  cross_origin
+  geo_analysis.hot_spots_googlemap.to_json
+end
+
+
+get '/hotspot/long' do
+  geo_tags=[]
+  results = client.query("select * from production where subdate(now(),interval 10 hour) < create_at;")
+  # interval 10 について 日本時間と, ツイッターの時間の 時差が8時間
+  results.each do |raw|
+    geo_tags << {
+        id:raw["id"],
+        lat:raw["lat"],
+        lng:raw["lng"],
+    }
+  end
+  geo_analysis= Geo_Analysis.new(geo_tags)
 
 
   cross_origin
-  geo_analysis.hot_spots_googlemap.to_json
+  geo_analysis.hot_spots.to_json
 end
 
 
