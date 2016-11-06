@@ -63,9 +63,9 @@ get '/hotspot' do
   end
   geo_analysis= Geo_Analysis.new(geo_tags)
 
-  p geo_tags
+
   cross_origin
-  geo_analysis.hot_spots.to_json
+  geo_analysis.hot_spots_googlemap.to_json
 end
 
 
