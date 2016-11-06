@@ -2,13 +2,14 @@
 <html>
 <head>
 <meta charset="utf-8">
-<script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCJbcnBWDdRJTJ5IYKQfxnnmvIOMdS8_HQ">
-    </script>
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="main.js" type="text/javascript"></script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKFr1U9SdA5FI5-412y5GB5eFAye3nyCU&callback=initMap"> </script>
+<script src="map.js" type="text/javascript"></script>
 </head>
-<body onload="jsonRead()">
+<body >
 <div id="map_canvas" style="width:1000px;height:600px"></div>
 <input type = "button" id = "button1" value ="ブラウザリロード" onclick = "location.reload()"/>
 <input type = "button" id = "button3" value ="Tweet情報取得" onclick = "jsonReadTweet()"/>
