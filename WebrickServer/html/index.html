@@ -11,10 +11,9 @@
 <div id="map"></div>
 <script type="text/javascript">
 function initMap() {
-
 $.getJSON('http://210.146.64.140:4567/hotspot/long', function(json){
-alert(json[0].coordinates[0]);
-
+//alert(json[0].coordinates[0]);
+var tweetCircle =[];
 map = new google.maps.Map(document.getElementById('map'), {
 center: {lat:34.694343,lng:135.194507},
 zoom: 16
@@ -30,11 +29,19 @@ map: map,
 center: {lat:json[0].coordinates[0],lng:json[0].coordinates[1]},
 radius: 60
 });
-
+    $.each(json,function(index,val){
+        $.each(val.tweets,function(index,val){
+            console.log(val);
+            tweetCircle[index] = new google.maps.Marker({
+                position: {lat:val.tweets_coordinates[0],lng:val.tweets_coordinates[1]},
+                map: map
+            });
+        });
+    });
 
 });
 }
-
+    
 </script>
 <script async defer
 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKFr1U9SdA5FI5-412y5GB5eFAye3nyCU&callback=initMap">

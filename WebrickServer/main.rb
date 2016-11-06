@@ -79,8 +79,6 @@ get '/hotspot/long' do
     }
   end
   geo_analysis= Geo_Analysis.new(geo_tags)
-
-
   cross_origin
   geo_analysis.hot_spots.to_json
 end
