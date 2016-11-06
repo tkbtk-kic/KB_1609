@@ -1,7 +1,7 @@
 # TwitHotSpot
 
 ## 製品概要
-### Tou-Tech(Tourism-Tech)
+### Tou-Tech (Tourism-Tech)
 
 ### 背景（製品開発のきっかけ、課題等）
 私たちは、今回のテーマを考えるにあたり「システムを通して人と何かをマッチングする」ということに関心を持ち、
@@ -46,7 +46,7 @@
 
 #### フレームワーク・ライブラリ・モジュール
 * PHP
-* ruby
+* Ruby(Sinatora)
 * JavaScript
 * TwitterOAuth
 
