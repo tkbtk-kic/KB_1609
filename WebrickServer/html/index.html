@@ -1,3 +1,43 @@
-<html><body>
-hello from WebRick
-</body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        html, body { height: 100%; margin: 0; padding: 0; }
+        #map { height: 100%; }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</head>
+<body>
+<div id="map"></div>
+<script type="text/javascript">
+function initMap() {
+
+$.getJSON('http://210.146.64.140:4567/hotspot/long', function(json){
+alert(json[0].coordinates[0]);
+
+map = new google.maps.Map(document.getElementById('map'), {
+center: {lat:34.694343,lng:135.194507},
+zoom: 16
+});
+
+var hotCircle = new google.maps.Circle({
+strokeColor: '#FF0000',
+strokeOpacity: 0.8,
+strokeWeight: 2,
+fillColor: '#FF0000',
+fillOpacity: 0.35,
+map: map,
+center: {lat:json[0].coordinates[0],lng:json[0].coordinates[1]},
+radius: 60
+});
+
+
+});
+}
+
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKFr1U9SdA5FI5-412y5GB5eFAye3nyCU&callback=initMap">
+        </script>
+</body>
+</html>
