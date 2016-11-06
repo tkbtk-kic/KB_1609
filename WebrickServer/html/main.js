@@ -3,48 +3,31 @@ var map;
 function jsonRead(){
   // JSONファイル読み込み開始
   $.ajax({
-    //url:"http://210.146.64.140:4567/hotspot",
-  url:"zantei.json",
+  url:"http://210.146.64.140:4567/hotspot", /* APIと通信 */
+  url:"test.json",
     cache:false,
     dataType:"json",
     success:function(json){
       var data=jsonRequest(json);
-            createMaker(data);
+            createMap_hostspot(data);
 
     }
   });
 };
 
-function jsonReadTweet(){
-  // JSONファイル読み込み開始
-  $.ajax({
-    //url:"http://210.146.64.140:4567/hotspot",
-  url:"zantei.json",
-    cache:false,
-    dataType:"json",
-    success:function(json){
-      var data=jsonRequest2(json);
-            createTweetMaker(data);
-
-    }
-  });
-};
-
-
-// JSONファイル読み込み完了
+// JSONファイル読み込み
 function jsonRequest(json){ //hotspot情報リクエスト
   var data=[];
   if(json.Marker){
-    var n=json.Marker.length; //長さ５
+    var n=json.Marker.length;
     for(var i=0;i<n;i++){
-      //  data.push(json.Marker[4].Tweet[i]);??
-      data.push(json.Marker[i]);  //マーカーのみtweet無し？
+      data.push(json.Marker[i]);
     }
   }
   return data;
 }
 
-function jsonRequest2(json){  //tweet情報リクエスト
+function jsonRequestTweet(json){  //tweet情報リクエスト
   var data=[];
   if(json.Tweet){
     var n=json.Tweet.length;
@@ -57,19 +40,11 @@ function jsonRequest2(json){  //tweet情報リクエスト
 
 
 // マップを生成して、複数のマーカーを追加
-function initialize(){
-  var op={
-    zoom:15,
-    center:new google.maps.LatLng(34.694137, 135.193130),
-    mapTypeId:google.maps.MapTypeId.ROADMAP
-  };
-  var map=new google.maps.Map(document.getElementById("map_canvas"),op);
 
-}
-function createMaker(data){
+function createMap_hostspot(data){
   var op={
-    zoom:15,
-    center:new google.maps.LatLng(34.694137, 135.193130),
+    zoom:16,
+    center:new google.maps.LatLng(34.694106, 135.196619),
     mapTypeId:google.maps.MapTypeId.ROADMAP
   };
   var map=new google.maps.Map(document.getElementById("map_canvas"),op);
@@ -83,16 +58,17 @@ function createMaker(data){
       map:map
     };
     var marker=new google.maps.Marker(obj);
+    // Circleのオプション
+  var circleOpts = {
+    center: new google.maps.LatLng(dat.lat,dat.lng),
+    map: map,
+    radius: 90
+  };
+  // Circleを作成
+  var circle = new google.maps.Circle(circleOpts);
   }
-  // Circleの初期設定
-var circleOpts = {
-  center: new google.maps.LatLng(34.694137, 135.193130),
-  map: map,
-  radius: 50
-};
-// 直前で作成したCircleOptionsを利用してCircleを作成
-var circle = new google.maps.Circle(circleOpts);
 }
+
 
 
 function createTweetMaker(data){
@@ -114,3 +90,19 @@ function createTweetMaker(data){
     var marker=new google.maps.Marker(obj);
   }
 }
+
+
+function jsonReadTweet(){
+  // JSONファイル読み込み開始
+  $.ajax({
+    //url:"http://210.146.64.140:4567/hotspot",
+  url:"zantei.json",
+    cache:false,
+    dataType:"json",
+    success:function(json){
+      var data=jsonRequest2(json);
+            createTweetMaker(data);
+
+    }
+  });
+};
