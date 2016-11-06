@@ -105,6 +105,25 @@ post '/edit' do
           # end
           #
           #   #  !(raw["entities"]["urls"][0]["display_url"][0, 12] == "swarmapp.com")
+          begin
+            if(!(raw["entities"]["urls"][0]["display_url"][0, 12] == "swarmapp.com"))
+              article ={
+                  id: raw["id"],
+                  lat: raw["geo"]["coordinates"][0],
+                  lng: raw["geo"]["coordinates"][1],
+                  create_at: (Time.parse(raw["created_at"])).strftime("%Y%m%d%H%M%S")
+              }
+              arr << article
+            end
+          rescue
+            article ={
+                id: raw["id"],
+                lat: raw["geo"]["coordinates"][0],
+                lng: raw["geo"]["coordinates"][1],
+                create_at: (Time.parse(raw["created_at"])).strftime("%Y%m%d%H%M%S")
+            }
+            arr << article
+          end
           if(!(raw["text"][0,5] == "I'm at"))
 
             article ={
