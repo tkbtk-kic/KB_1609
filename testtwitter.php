@@ -1,6 +1,7 @@
 <?php
-require "twitteroauth/autoload.php";
-use Abraham\TwitterOAuth\TwitterOAuth;
+//require "twitteroauth/autoload.php";
+require "TwistOAuth/build/TwistOAuth.phar";
+//use Abraham\TwitterOAuth\TwitterOAuth;
 
 $jsonUrl = "Twitterkey.json"; //JSONファイルの場所とファイル名を記述
 if(file_exists($jsonUrl)){
@@ -16,7 +17,7 @@ if(file_exists($jsonUrl)){
 
 //var_dump($consumerKey);
 
-$connection = new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
+$connection = new TwistOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
 //var_dump($connection);
 
 $tweets_params =["rpp"=>"90", "geocode" => "34.694343,135.194507,1km"];

@@ -106,7 +106,10 @@ post '/edit' do
           #
           #   #  !(raw["entities"]["urls"][0]["display_url"][0, 12] == "swarmapp.com")
           begin
+            # p raw["entities"]["urls"][0]["display_url"]
             if(!(raw["entities"]["urls"][0]["display_url"][0, 12] == "swarmapp.com"))
+              # p (raw["entities"]["urls"][0]["display_url"][0, 12] == "swarmapp.com")
+              p raw["entities"]["urls"][0]["display_url"]
               article ={
                   id: raw["id"],
                   lat: raw["geo"]["coordinates"][0],
